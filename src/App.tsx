@@ -20,6 +20,7 @@ const App = () => {
   const [imageIndex, setImageIndex] = useState<number>(0);
   const [mouseDownClientX, setMouseDownClientX] = useState<number>(0);
   const [mouseUpClientX, setMouseUpClientX] = useState<number>(0);
+  const [cursorOn, setCursorOn] = useState<boolean>(false);
 
   const moveRight = (): void => {
     if (translateValue !== 70 * (images.length - 1)) {
@@ -47,9 +48,11 @@ const App = () => {
 
   const onMouseDown = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
     setMouseDownClientX(e.clientX);
+    setCursorOn(true);
   };
   const onMouseUp = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
     setMouseUpClientX(e.clientX);
+    setCursorOn(false);
   };
 
   useEffect(() => {
@@ -78,7 +81,11 @@ const App = () => {
     <>
       <GlobalStyle />
       <Styled.Container>
-        <Styled.Slider onMouseDown={onMouseDown} onMouseUp={onMouseUp}>
+        <Styled.Slider
+          onMouseDown={onMouseDown}
+          onMouseUp={onMouseUp}
+          cursorOn={cursorOn}
+        >
           <Styled.ImageBox
             translateValue={translateValue !== 0 ? translateValue : null}
           >

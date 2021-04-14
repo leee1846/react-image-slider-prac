@@ -5,13 +5,17 @@ export const Container = Styled.div`
   position:relative;
 `;
 
-export const Slider = Styled.div`
+type SliderProps = {
+  cursorOn: boolean;
+};
+export const Slider = Styled.div<SliderProps>`
   position:relative;
   max-width:70vw;
   height:500px;
   display:flex;
   overflow:hidden;
   margin:0 auto;
+  cursor:${({ cursorOn }) => cursorOn && "pointer"}
 `;
 
 type ImageBoxProps = {
