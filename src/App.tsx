@@ -17,6 +17,7 @@ const images = [
 
 const App = () => {
   const [translateValue, setTranslateValue] = useState<number>(0);
+  const [imageIndex, setImageIndex] = useState<number>(0);
 
   const clickRight = (e: React.MouseEvent<HTMLElement, MouseEvent>): void => {
     if (translateValue !== 70 * (images.length - 1)) {
@@ -34,6 +35,9 @@ const App = () => {
     }
   };
 
+  useEffect(() => {
+    setImageIndex(translateValue / 70);
+  }, [translateValue]);
   return (
     <>
       <GlobalStyle />
@@ -63,6 +67,20 @@ const App = () => {
             ></Styled.Arrow>
           </Styled.ArrowBox>
         </Styled.Slider>
+        <Styled.DotBox>
+          {images.map((picture, idx) => {
+            return (
+              <Styled.Dot
+                key={picture.id}
+                className='fas fa-circle'
+              ></Styled.Dot>
+            );
+          })}
+          <Styled.CurrentDot
+            className='fas fa-circle'
+            imageIndex={imageIndex}
+          ></Styled.CurrentDot>
+        </Styled.DotBox>
       </Styled.Container>
     </>
   );
