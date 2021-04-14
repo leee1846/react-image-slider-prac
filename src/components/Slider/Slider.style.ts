@@ -44,4 +44,8 @@ export const Arrow = Styled.i`
   color:white;
   font-size:2rem;
   cursor:pointer;
+
+  &:hover{
+    color:dodgerblue;
+  }
 `;
