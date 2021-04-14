@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import img1 from "./images/image1.jpg";
 import img2 from "./images/image2.jpg";
 import img3 from "./images/image3.jpg";
@@ -6,21 +6,19 @@ import img4 from "./images/image4.jpg";
 import img5 from "./images/image5.jpg";
 import * as Styled from "./App.style";
 import GlobalStyle from "./GlobalStyle";
-
-const images = [
-  { pic: img1, id: 1 },
-  { pic: img2, id: 2 },
-  { pic: img3, id: 3 },
-  { pic: img4, id: 4 },
-  { pic: img5, id: 5 },
-];
+import Slider from "./components/Slider/Slider";
+import SliderDot from "./components/SliderDot/SliderDot";
 
 const App = () => {
+  const images = [
+    { pic: img1, id: 1 },
+    { pic: img2, id: 2 },
+    { pic: img3, id: 3 },
+    { pic: img4, id: 4 },
+    { pic: img5, id: 5 },
+  ];
+
   const [translateValue, setTranslateValue] = useState<number>(0);
-  const [imageIndex, setImageIndex] = useState<number>(0);
-  const [mouseDownClientX, setMouseDownClientX] = useState<number>(0);
-  const [mouseUpClientX, setMouseUpClientX] = useState<number>(0);
-  const [cursorOn, setCursorOn] = useState<boolean>(false);
 
   const moveRight = (): void => {
     if (translateValue !== 70 * (images.length - 1)) {
@@ -38,92 +36,21 @@ const App = () => {
     }
   };
 
-  const clickRight = (e: React.MouseEvent<HTMLElement, MouseEvent>): void => {
-    moveRight();
-  };
-
-  const clickLeft = (e: React.MouseEvent<HTMLElement, MouseEvent>): void => {
-    moveLeft();
-  };
-
-  const onMouseDown = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
-    setMouseDownClientX(e.clientX);
-    setCursorOn(true);
-  };
-  const onMouseUp = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
-    setMouseUpClientX(e.clientX);
-    setCursorOn(false);
-  };
-
-  useEffect(() => {
-    const dragSpace = Math.abs(mouseDownClientX - mouseUpClientX);
-
-    if (mouseDownClientX !== 0) {
-      if (mouseUpClientX < mouseDownClientX && dragSpace > 100) {
-        moveRight();
-      } else if (mouseUpClientX > mouseDownClientX && dragSpace > 100) {
-        moveLeft();
-      }
-    }
-  }, [mouseUpClientX]);
-
-  useEffect(() => {
-    setImageIndex(translateValue / 70);
-    const imageInterval = setInterval(() => {
-      moveRight();
-    }, 3000);
-    return () => {
-      clearInterval(imageInterval);
-    };
-  }, [translateValue]);
-
   return (
     <>
       <GlobalStyle />
       <Styled.Container>
-        <Styled.Slider
-          onMouseDown={onMouseDown}
-          onMouseUp={onMouseUp}
-          cursorOn={cursorOn}
-        >
-          <Styled.ImageBox
-            translateValue={translateValue !== 0 ? translateValue : null}
-          >
-            {images.map((picture, idx) => {
-              return (
-                <Styled.Image
-                  key={picture.id}
-                  src={picture.pic}
-                  alt={"dog" + idx}
-                />
-              );
-            })}
-          </Styled.ImageBox>
-          <Styled.ArrowBox>
-            <Styled.Arrow
-              onClick={clickLeft}
-              className='fas fa-chevron-left'
-            ></Styled.Arrow>
-            <Styled.Arrow
-              onClick={clickRight}
-              className='fas fa-chevron-right'
-            ></Styled.Arrow>
-          </Styled.ArrowBox>
-        </Styled.Slider>
-        <Styled.DotBox>
-          {images.map((picture, idx) => {
-            return (
-              <Styled.Dot
-                key={picture.id}
-                className='fas fa-circle'
-              ></Styled.Dot>
-            );
-          })}
-          <Styled.CurrentDot
-            className='fas fa-circle'
-            imageIndex={imageIndex}
-          ></Styled.CurrentDot>
-        </Styled.DotBox>
+        <Slider
+          translateValue={translateValue}
+          images={images}
+          moveRight={moveRight}
+          moveLeft={moveLeft}
+        />
+        <SliderDot
+          images={images}
+          translateValue={translateValue}
+          moveRight={moveRight}
+        />
       </Styled.Container>
     </>
   );
