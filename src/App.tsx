@@ -18,8 +18,10 @@ const images = [
 const App = () => {
   const [translateValue, setTranslateValue] = useState<number>(0);
   const [imageIndex, setImageIndex] = useState<number>(0);
+  const [mouseDownClientX, setMouseDownClientX] = useState<number>(0);
+  const [mouseUpClientX, setMouseUpClientX] = useState<number>(0);
 
-  const clickRight = (e: React.MouseEvent<HTMLElement, MouseEvent>): void => {
+  const moveRight = (): void => {
     if (translateValue !== 70 * (images.length - 1)) {
       setTranslateValue((prev) => prev + 70);
     } else {
@@ -27,7 +29,7 @@ const App = () => {
     }
   };
 
-  const clickLeft = (e: React.MouseEvent<HTMLElement, MouseEvent>): void => {
+  const moveLeft = (): void => {
     if (translateValue !== 0) {
       setTranslateValue((prev) => prev - 70);
     } else {
@@ -35,24 +37,48 @@ const App = () => {
     }
   };
 
+  const clickRight = (e: React.MouseEvent<HTMLElement, MouseEvent>): void => {
+    moveRight();
+  };
+
+  const clickLeft = (e: React.MouseEvent<HTMLElement, MouseEvent>): void => {
+    moveLeft();
+  };
+
+  const onMouseDown = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+    setMouseDownClientX(e.clientX);
+  };
+  const onMouseUp = (e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+    setMouseUpClientX(e.clientX);
+  };
+
+  useEffect(() => {
+    const dragSpace = Math.abs(mouseDownClientX - mouseUpClientX);
+
+    if (mouseDownClientX !== 0) {
+      if (mouseUpClientX < mouseDownClientX && dragSpace > 100) {
+        moveRight();
+      } else if (mouseUpClientX > mouseDownClientX && dragSpace > 100) {
+        moveLeft();
+      }
+    }
+  }, [mouseUpClientX]);
+
   useEffect(() => {
     setImageIndex(translateValue / 70);
     const imageInterval = setInterval(() => {
-      if (translateValue !== 70 * (images.length - 1)) {
-        setTranslateValue((prev) => prev + 70);
-      } else {
-        setTranslateValue(0);
-      }
+      moveRight();
     }, 3000);
     return () => {
       clearInterval(imageInterval);
     };
   }, [translateValue]);
+
   return (
     <>
       <GlobalStyle />
       <Styled.Container>
-        <Styled.Slider>
+        <Styled.Slider onMouseDown={onMouseDown} onMouseUp={onMouseUp}>
           <Styled.ImageBox
             translateValue={translateValue !== 0 ? translateValue : null}
           >
