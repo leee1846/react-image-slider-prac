@@ -36,6 +36,7 @@ const App = () => {
   };
 
   useEffect(() => {
+    setImageIndex(translateValue / 70);
     const imageInterval = setInterval(() => {
       if (translateValue !== 70 * (images.length - 1)) {
         setTranslateValue((prev) => prev + 70);
@@ -46,10 +47,6 @@ const App = () => {
     return () => {
       clearInterval(imageInterval);
     };
-  }, [translateValue]);
-
-  useEffect(() => {
-    setImageIndex(translateValue / 70);
   }, [translateValue]);
   return (
     <>
